@@ -1,34 +1,29 @@
 <script lang='ts'>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	// import welcome from '$lib/images/svelte-welcome.webp';
+	// import welcome_fallback from '$lib/images/svelte-welcome.png';
   	import type { PageData } from './$types';
+	// import GameList from './GameList.svelte';
+	import AdminGameAdder from './AdminGameAdder.svelte';
+	import AdminGameList from './AdminGameList.svelte';
 
 	export let data: PageData;
 </script>
 
 <svelte:head>
-	<title>Freestyle</title>
-	<meta name="description" content="Freestyle X SvelteKit demo app" />
+	<title>LINKFAST!</title>
+	<meta name="description" content="Funnest word game on the Internet! according to at least two people" />
 </svelte:head>
 
 <section>
 	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app x <a href="https://www.freestyle.sh" target="_blank">Freestyle Cloud</a>
+		Admin Page
 	</h1>
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
+	<AdminGameAdder />
 
-	<Counter initialCount={data.count} />
+	<AdminGameList />
+	
+
 </section>
 
 <style>
