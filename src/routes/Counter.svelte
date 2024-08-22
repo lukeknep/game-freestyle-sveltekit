@@ -1,7 +1,7 @@
 <script lang="ts">
   import type Counter from "$lib/counter";
   // import type { GameManager } from "$lib/game";
-  import { generateWords } from "$lib/game";
+  import { generateWords } from "$lib/game-tools-tools";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";

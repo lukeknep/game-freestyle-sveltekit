@@ -1,16 +1,19 @@
 <script lang="ts">
-  import type LevelManager from "$lib/level";
-  import { generateWords, generateRounds } from "$lib/game";
-  import { touchLevelsStore } from "$lib/stores";
+  import type GameManager from "$lib/game";
+  import { generateWords, generateRounds } from "$lib/game-tools";
+  import { touchGamesStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";
 
-  const levelManager = useCloud<typeof LevelManager>("level-manager");
+  const gameManager = useCloud<typeof GameManager>("game-manager");
 
   let words: string[] = generateWords();
   let rounds = generateRounds(5, 3);
   let clues = ["","",""];
+
+  let showingAdvanced = false;
+  let advancedJSON = "";
 
   function getNewWords()
   {
@@ -23,15 +26,34 @@
     getNewWords();
   });
 
-  function saveLevel()
+  function saveGame()
   {
-    levelManager.saveLevel(words, rounds, clues).then(() => {
+    gameManager.saveGame(words, rounds, clues).then(() => {
       getNewWords();
-      touchLevelsStore();
+      touchGamesStore();
     });
   }
 
-//   const levelManager = useCloud<typeof LevelManager>("level-manager");
+  function saveAdvancedJSON()
+  {
+    try {
+      let obj = JSON.parse(advancedJSON)
+      if (!obj.words || !obj.rounds || !obj.exampleClues)
+      {
+        alert ("Missing object propeties. See Console");
+        console.log(obj);
+        return;
+      }
+      gameManager.saveGame(obj.words, obj.rounds, obj.exampleClues);
+      advancedJSON = "";
+    } catch(e) {
+      alert ("Unable to save JSON. See Console.");
+      console.log(e);
+    }
+    
+  }
+
+//   const gameManager = useCloud<typeof GameManager>("game-manager");
 </script>
 
 <h2> Add Game </h2>
@@ -53,10 +75,22 @@
   {/each}
 
   <button
-    on:click={saveLevel}
+    on:click={saveGame}
   >
-    Save Level
+    Save Game
   </button>
+</div>
+
+<div>
+  <div on:click={() => showingAdvanced = !showingAdvanced}> Toggle Advanced </div>
+  {#if showingAdvanced}
+    <input 
+      type="text" 
+      placeholder="JSON of game to save"
+      bind:value={advancedJSON}
+    />
+    <button on:click={saveAdvancedJSON}>Save Game from JSON</button>
+  {/if}
 </div>
 
 <style>

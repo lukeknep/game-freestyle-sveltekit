@@ -1,99 +1,102 @@
 <script lang="ts">
-    import type { Level } from "$lib/game";
-  import type LevelManager from "$lib/level";
-  import { levelsStore } from "$lib/stores";
+    import type { Game } from "$lib/game-tools";
+  import type GameManager from "$lib/game";
+  import { gamesStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";
 
 
 
-  const levelManager = useCloud<typeof LevelManager>("level-manager");
+  const gameManager = useCloud<typeof GameManager>("game-manager");
 
-  let levels: Level[] = [];
-  let serverLevels: Level[] = [];
+  let games: Game[] = [];
+  let serverGames: Game[] = [];
   
 
   onMount(() => {
-    refreshLevels();
+    refreshGames();
   });
 
-  levelsStore.subscribe(() => { console.log('refresh'); refreshLevels() });
+  gamesStore.subscribe(() => { refreshGames() });
 
-  function setLocalLevels(newLevels: Level[])
+  function setLocalGames(newGames: Game[])
   {
-    console.log('got new levels')
-    if (!newLevels) {
+    if (!newGames) {
         return;
     }
-    levels = newLevels;
-    console.log(levels);
-    serverLevels = JSON.parse(JSON.stringify(newLevels)) as any as Level[];
+    games = newGames;
+    serverGames = JSON.parse(JSON.stringify(newGames)) as any as Game[];
   }
 
-  function refreshLevels() 
+  function refreshGames() 
   {
-    levelManager.getLevels().then(setLocalLevels);
+    gameManager.getGames().then(setLocalGames);
   }
 
-  function deleteLevel(levelId: number)
+  function deleteGame(gameId: number)
   {
-    levelManager.deleteLevel(levelId).then(setLocalLevels);
+    gameManager.deleteGame(gameId).then(setLocalGames);
   }
 
-  function approveLevel(levelId: number, active: boolean)
+  function approveGame(gameId: number, active: boolean)
   {
-    levelManager.setLevel(levelId, {
+    gameManager.setGame(gameId, {
         active,
     })
-    .then(setLocalLevels);
+    .then(setLocalGames);
   }
 
-  function saveLevel(levelId: number)
+  function saveGame(gameId: number)
   {
-    const level = levels.find((l) => l.id == levelId);
-    if (level !== undefined)
+    const game = games.find((l) => l.id == gameId);
+    if (game !== undefined)
     {
-        levelManager.setLevel(levelId, level)
-            .then(setLocalLevels);
+        gameManager.setGame(gameId, game)
+            .then(setLocalGames);
     }
   }
 
 </script>
 
-<h2> All {levels ? levels.length : 0} Levels </h2>
+<h2> All {games ? games.length : 0} Games </h2>
 
-{#each levels as level, levelIndex (level.id)}
-    <div class="counter">
-    <button
-        on:click={() => deleteLevel(level.id)}
-    >
-        Delete Level {levelIndex}
-    </button>
-
-    {#each level.rounds as round, roundIndex}
-        <div class="counter-viewport">
-            {#each level.words as word, index}
-                <div class="{round.answers[index] ? "word-correct" : "" } word">{word}</div>
-            {/each}
-            <input type="text" bind:value={level.exampleClues[roundIndex]} />
+{#each games as game, gameIndex (game.id)}
+    <div class="counter-wrapper">
+        <div class="counter-top" on:click={() => alert(JSON.stringify(game))}>
+            Game {game.id}
         </div>
-    {/each}
+        <div class="counter">
+            <button
+                on:click={() => deleteGame(game.id)}
+            >
+                Delete
+            </button>
 
-    <button
-        on:click={() => saveLevel(level.id)}
-        class="fixed-width-button"
-    >
-        { 
-            level.exampleClues.every((c, i) => serverLevels[levelIndex].exampleClues[i] == c) ? "" : "Save Changes" 
-        }
-    </button>
+            {#each game.rounds as round, roundIndex}
+                <div class="counter-viewport">
+                    {#each game.words as word, index}
+                        <div class="{round.answers[index] ? "word-correct" : "" } word">{word}</div>
+                    {/each}
+                    <input type="text" bind:value={game.exampleClues[roundIndex]} />
+                </div>
+            {/each}
 
-    <button
-        on:click={() => approveLevel(level.id, !level.active)}
-    >
-        { level.active ? "Deactivate" : "Approve" } Level
-    </button>
+            <button
+                on:click={() => saveGame(game.id)}
+                class="fixed-width-button"
+            >
+                { 
+                    game.exampleClues.every((c, i) => serverGames[gameIndex].exampleClues[i] == c) ? "" : "Save Changes" 
+                }
+            </button>
+
+            <button
+                on:click={() => approveGame(game.id, !game.active)}
+            >
+                { game.active ? "Deactivate" : "Approve" }
+            </button>
+        </div>
     </div>
 {/each}
 
