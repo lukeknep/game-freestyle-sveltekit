@@ -37,9 +37,6 @@ export function generateWords(id?: number): string[]
         index = index % range_size;
     }
 
-    console.log("words")
-    console.log(words)
-
     return words;
 }
 

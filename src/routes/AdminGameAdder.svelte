@@ -1,6 +1,7 @@
 <script lang="ts">
   import type LevelManager from "$lib/level";
   import { generateWords, generateRounds } from "$lib/game";
+  import { touchLevelsStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";
@@ -13,7 +14,6 @@
 
   function getNewWords()
   {
-    console.log(clues);
     words = generateWords();
     rounds = generateRounds(5,3);
     clues = ["","",""];
@@ -25,7 +25,10 @@
 
   function saveLevel()
   {
-    levelManager.saveLevel(words, rounds, clues).then(() => getNewWords())
+    levelManager.saveLevel(words, rounds, clues).then(() => {
+      getNewWords();
+      touchLevelsStore();
+    });
   }
 
 //   const levelManager = useCloud<typeof LevelManager>("level-manager");

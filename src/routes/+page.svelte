@@ -7,6 +7,7 @@
 	import AdminGameList from './AdminGameList.svelte';
 
 	export let data: PageData;
+
 </script>
 
 <svelte:head>

@@ -1,9 +1,12 @@
 <script lang="ts">
     import type { Level } from "$lib/game";
   import type LevelManager from "$lib/level";
+  import { levelsStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";
+
+
 
   const levelManager = useCloud<typeof LevelManager>("level-manager");
 
@@ -15,12 +18,16 @@
     refreshLevels();
   });
 
+  levelsStore.subscribe(() => { console.log('refresh'); refreshLevels() });
+
   function setLocalLevels(newLevels: Level[])
   {
+    console.log('got new levels')
     if (!newLevels) {
         return;
     }
     levels = newLevels;
+    console.log(levels);
     serverLevels = JSON.parse(JSON.stringify(newLevels)) as any as Level[];
   }
 
