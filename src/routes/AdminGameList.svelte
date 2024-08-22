@@ -8,33 +8,60 @@
   const levelManager = useCloud<typeof LevelManager>("level-manager");
 
   let levels: Level[] = [];
+  let serverLevels: Level[] = [];
+  
 
   onMount(() => {
     refreshLevels();
   });
 
+  function setLocalLevels(newLevels: Level[])
+  {
+    if (!newLevels) {
+        return;
+    }
+    levels = newLevels;
+    serverLevels = JSON.parse(JSON.stringify(newLevels)) as any as Level[];
+  }
+
   function refreshLevels() 
   {
-    levelManager.getLevels().then((newLevels) => {
-        if (!newLevels) {
-            return;
-        }
-        levels = Object.values(newLevels).sort((a,b) => {
-            return a.createdAtMillis - b.createdAtMillis;
-        });
-    });
+    levelManager.getLevels().then(setLocalLevels);
+  }
+
+  function deleteLevel(levelId: number)
+  {
+    levelManager.deleteLevel(levelId).then(setLocalLevels);
+  }
+
+  function approveLevel(levelId: number, active: boolean)
+  {
+    levelManager.setLevel(levelId, {
+        active,
+    })
+    .then(setLocalLevels);
+  }
+
+  function saveLevel(levelId: number)
+  {
+    const level = levels.find((l) => l.id == levelId);
+    if (level !== undefined)
+    {
+        levelManager.setLevel(levelId, level)
+            .then(setLocalLevels);
+    }
   }
 
 </script>
 
 <h2> All {levels ? levels.length : 0} Levels </h2>
 
-{#each levels as level (level.id)}
+{#each levels as level, levelIndex (level.id)}
     <div class="counter">
     <button
-        on:click={() => {}}
+        on:click={() => deleteLevel(level.id)}
     >
-        Delete Level
+        Delete Level {levelIndex}
     </button>
 
     {#each level.rounds as round, roundIndex}
@@ -47,9 +74,18 @@
     {/each}
 
     <button
-        on:click={() => {}}
+        on:click={() => saveLevel(level.id)}
+        class="fixed-width-button"
     >
-        Approve Level
+        { 
+            level.exampleClues.every((c, i) => serverLevels[levelIndex].exampleClues[i] == c) ? "" : "Save Changes" 
+        }
+    </button>
+
+    <button
+        on:click={() => approveLevel(level.id, !level.active)}
+    >
+        { level.active ? "Deactivate" : "Approve" } Level
     </button>
     </div>
 {/each}
@@ -77,6 +113,10 @@
     touch-action: manipulation;
     font-size: 1rem;
     cursor: pointer;
+  }
+
+  .fixed-width-button {
+    width: 100px;
   }
 
   .counter button:hover {

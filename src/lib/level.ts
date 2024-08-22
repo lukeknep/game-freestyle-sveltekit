@@ -21,17 +21,39 @@ class LevelManager {
         rounds,
         exampleClues,
         createdAtMillis: (new Date()).getTime(),
+        deleted: false,
     };
 
     this.levels[id] = level;
   }
 
-  getLevel(id: number): Level {
-    return this.levels[id];
+  deleteLevel(id: number): Level[] {
+    this.levels[id].deleted = true;
+    return this.getLevels();
   }
 
-  getLevels() {
-    return this.levels;
+  getLevel(id: number): Level {
+    if (this.levels[id] !== undefined)
+    {
+        return this.levels[id];
+    }
+    throw new Error("No level for id " + id);
+  }
+
+  setLevel(id: number, properties: Partial<Level>): Level[]
+  {
+    Object.assign(this.levels[id], properties);
+    return this.getLevels();
+  }
+
+  getLevels(): Level[]
+  {
+    let returnVal = Object.values(this.levels)
+        .filter((level) => !level.deleted)
+        .sort((a,b) => {
+            return a.createdAtMillis - b.createdAtMillis;
+        });
+    return returnVal;
   }
 }
 export default LevelManager;

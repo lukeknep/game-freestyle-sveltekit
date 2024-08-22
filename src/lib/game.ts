@@ -61,7 +61,7 @@ export function generateRounds(numWords: number, numLevels: number): Round[] {
             }
         }
 
-        let answers = [];
+        let answers: boolean[] = [];
         for (let k = 0; k < numWords; k ++)
         {
             answers.push(targets.indexOf(k) != -1);
@@ -71,6 +71,18 @@ export function generateRounds(numWords: number, numLevels: number): Round[] {
             answers,
         };
 
+        let hasMatch = false;
+        rounds.forEach((r) => {
+            if (r.answers.every((b, i) => answers[i] === b))
+            {
+                hasMatch = true;
+            }
+        })
+
+        if (hasMatch) {
+            i --; 
+            continue;
+        }
         rounds.push(round);
     }
     return rounds;
@@ -87,9 +99,10 @@ export interface Level {
   rounds: Round[];
   exampleClues: String[];
   createdAtMillis: number;
+  deleted: boolean;
 }
 
-export type Levels = {[id: string]: Level};
+export type Levels = {[id: string]: Level };
 
 
 // @cloudstate
