@@ -10,4 +10,7 @@ declare global {
 	}
 }
 
+console.log('app loading');
+
+
 export {};

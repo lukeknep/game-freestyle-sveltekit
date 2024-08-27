@@ -7,7 +7,7 @@ class GameManager {
   games: {[id: string]: Game } = {};
   numGames = 0;
 
-  saveGame(words: string[], rounds: Round[], exampleClues: String[]) {
+  saveGame(adminPassword: string, words: string[], rounds: Round[], exampleClues: String[]) {
     let id = ++this.numGames;
     while (this.games[id] !== undefined)
     {
@@ -27,27 +27,39 @@ class GameManager {
     this.games[id] = game;
   }
 
-  deleteGame(id: number): Game[] {
+  deleteGame(adminPassword: string, id: number): Game[] {
     this.games[id].deleted = true;
-    return this.getGames();
+    return this.getGames(adminPassword);
   }
 
   getGame(id: number): Game {
     if (this.games[id] !== undefined)
     {
+      if (this.games[id].active)
+      {
         return this.games[id];
+      }
+      
     }
     throw new Error("No game for id " + id);
   }
 
-  setGame(id: number, properties: Partial<Game>): Game[]
+  setGame(adminPassword: string, id: number, properties: Partial<Game>): Game[]
   {
     Object.assign(this.games[id], properties);
-    return this.getGames();
+    return this.getGames(adminPassword);
   }
 
-  getGames(): Game[]
+  getGames(adminPassword: string): Game[]
   {
+    if (adminPassword != "abcxyz")
+    {
+      console.log("Wrong admin password: " + adminPassword);
+      return {
+        error: "Wrong admin password",
+      } as any;
+    }
+
     let returnVal = Object.values(this.games)
         .filter((game) => !game.deleted)
         .sort((a,b) => {
