@@ -1,5 +1,44 @@
 // import { cloudstate } from "freestyle-sh";
 import { ALL_WORDS, ID_TO_WORD_RANGE } from "./const";
+import english from "./english";
+
+export interface Round {
+    answers: boolean[];
+}
+
+export interface Game {
+    id: string;
+    active: boolean;
+    words: string[];
+    rounds: Round[];
+    exampleClues: string[];
+    createdAtMillis: number;
+    deleted: boolean;
+}
+
+export interface Turn {
+    cluePlayerId: string;
+    guessPlayerId: string;
+
+    clue: string | null;
+    guessAnswers: boolean[] | null;
+
+    isComplete: boolean;
+    isCorrect: boolean | null;
+}
+
+
+export function validateClue(clue: string): boolean
+{
+    clue = clue.toLowerCase();
+    if (!clue || english[clue] !== 1)
+    {
+        return false;
+    }
+    return true;
+}
+
+
 
 export function generateWords(id?: number): string[]
 {
@@ -85,19 +124,6 @@ export function generateRounds(numWords: number, numGames: number): Round[] {
     return rounds;
 }
 
-export interface Round {
-  answers: boolean[];
-}
-
-export interface Game {
-  id: number;
-  active: boolean;
-  words: string[];
-  rounds: Round[];
-  exampleClues: String[];
-  createdAtMillis: number;
-  deleted: boolean;
-}
 
 // export type Games = {[id: string]: Game };
 

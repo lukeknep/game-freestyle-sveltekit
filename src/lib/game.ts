@@ -8,10 +8,10 @@ class GameManager {
   numGames = 0;
 
   saveGame(adminPassword: string, words: string[], rounds: Round[], exampleClues: String[]) {
-    let id = ++this.numGames;
+    let id = "g-" + (++this.numGames);
     while (this.games[id] !== undefined)
     {
-        id ++;
+        id = "g-" + (++this.numGames);
     }
 
     const game = {
