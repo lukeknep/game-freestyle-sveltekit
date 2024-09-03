@@ -2,7 +2,7 @@
 	import './styles.css';
 </script>
 
-<div class="app">
+<div class="app" data-theme="retro">
 
 	<main>
 		<slot />

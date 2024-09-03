@@ -65,7 +65,9 @@
 
 <button on:click={() => refreshGames()}>Load Games</button>
 
-<h2> All {games ? games.length : 0} Games </h2>
+<div class="text-3xl"> 
+  All {games ? games.length : 0} Games 
+</div>
 
 {#each games as game, gameIndex (game.id)}
     <div class="counter-wrapper">

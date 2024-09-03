@@ -78,6 +78,7 @@
 
   <button
     on:click={saveGame}
+    class="btn"
   >
     Save Game
   </button>
@@ -91,7 +92,7 @@
       placeholder="JSON of game to save"
       bind:value={advancedJSON}
     />
-    <button on:click={saveAdvancedJSON}>Save Game from JSON</button>
+    <button class="btn" on:click={saveAdvancedJSON}>Save Game from JSON</button>
   {/if}
 </div>
 
