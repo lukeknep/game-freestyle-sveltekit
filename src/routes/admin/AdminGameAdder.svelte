@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type GameManager from "$lib/game";
+  import type { DataManager } from "$lib/data";
   import { generateWords, generateRounds } from "$lib/game-tools";
   import { touchGamesStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
   import { onMount } from "svelte";
 
-  const gameManager = useCloud<typeof GameManager>("game-manager");
+  const gameManager = useCloud<typeof DataManager>("DataManager");
 
   export let adminPassword: string;
 
@@ -55,7 +55,6 @@
     
   }
 
-//   const gameManager = useCloud<typeof GameManager>("game-manager");
 </script>
 
 <h2> Add Game </h2>

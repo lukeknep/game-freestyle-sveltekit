@@ -3,8 +3,6 @@
 	// import welcome_fallback from '$lib/images/svelte-welcome.png';
   	import type { PageData } from './$types';
 	// import GameList from './GameList.svelte';
-	import AdminGameAdder from './AdminGameAdder.svelte';
-	import AdminGameList from './AdminGameList.svelte';
 
 	export let data: PageData;
 
@@ -17,14 +15,8 @@
 
 <section>
 	<h1>
-		Admin Page
+		Home Page
 	</h1>
-
-	<AdminGameAdder />
-
-	<AdminGameList />
-	
-
 </section>
 
 <style>

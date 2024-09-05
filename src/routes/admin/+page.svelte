@@ -22,7 +22,6 @@
         passwordSaved = true;
         if (browser)
         {
-            console.log('set item');
             localStorage.setItem('adminPassword', password);
         }
     }
@@ -48,11 +47,11 @@
     {/if}
     {#if passwordSaved}
         <AdminGameAdder 
-        adminPassword={password}
+        	adminPassword={password}
         />
 
         <AdminGameList 
-        adminPassword={password}
+        	adminPassword={password}
         />
     {/if}
 	

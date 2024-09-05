@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Game } from "$lib/game-tools";
-  import type GameManager from "$lib/game";
+  import type { DataManager } from "$lib/data";
   import { gamesStore } from "$lib/stores";
 
   import { useCloud } from "freestyle-sh";
@@ -8,15 +8,11 @@
 
   export let adminPassword: string;
 
-  const gameManager = useCloud<typeof GameManager>("game-manager");
+  const gameManager = useCloud<typeof DataManager>("DataManager");
 
   let games: Game[] = [];
   let serverGames: Game[] = [];
   
-
-  // onMount(() => {
-  //   refreshGames();
-  // });
 
   gamesStore.subscribe(() => { refreshGames() });
 
@@ -31,19 +27,18 @@
 
   function refreshGames() 
   {
-    console.log("using " + adminPassword);
     if (!adminPassword) {
       return;
     }
     gameManager.getGames(adminPassword).then(setLocalGames);
   }
 
-  function deleteGame(gameId: number)
+  function deleteGame(gameId: string)
   {
     gameManager.deleteGame(adminPassword, gameId).then(setLocalGames);
   }
 
-  function approveGame(gameId: number, active: boolean)
+  function approveGame(gameId: string, active: boolean)
   {
     gameManager.setGame(adminPassword, gameId, {
         active,
@@ -51,12 +46,12 @@
     .then(setLocalGames);
   }
 
-  function saveGame(adminPassword, gameId: number)
+  function saveGame(gameId: string)
   {
     const game = games.find((l) => l.id == gameId);
     if (game !== undefined)
     {
-        gameManager.setGame(gameId, game)
+        gameManager.setGame(adminPassword, gameId, game)
             .then(setLocalGames);
     }
   }
