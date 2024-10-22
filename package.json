@@ -29,6 +29,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"freestyle-sh": "^0.2.21"
+		"@nanostores/query": "^0.3.4",
+		"@nanostores/react": "^0.7.3",
+		"freestyle-sh": "^0.2.21",
+		"nanostores": "^0.11.3",
+		"svelte-tel-input": "^3.5.1"
 	}
 }
